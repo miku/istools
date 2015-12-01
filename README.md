@@ -2,4 +2,3 @@ islint
 ======
 
 Intermediate Schema linter.
-
