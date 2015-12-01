@@ -172,8 +172,7 @@ func SubtitleRepetition(is finc.IntermediateSchema) error {
 // currencyPattern is a rather narrow pattern: http://rubular.com/r/WjcnjhckZq
 var currencyPattern = regexp.MustCompile(`[€$¥][+-]?[0-9]{1,3}(?:[0-9]*(?:[.,][0-9]{2})?|(?:,[0-9]{3})*(?:\.[0-9]{2})?|(?:\.[0-9]{3})*(?:,[0-9]{2})?)`)
 
-// NoCurrencyInTitle, e.g. http://katalogbeta.slub-
-// dresden.de/id/ai-49-aHR0cDovL2R4LmRvaS5vcmcvMTAuMTA4Ni82ODExNDk/#tx_find
+// NoCurrencyInTitle, e.g. http://goo.gl/HACBcW
 // Cartier , Marie . Baby, You Are My Religion: Women, Gay Bars, and Theology
 // Before Stonewall . Gender, Theology and Spirituality. Durham, UK: Acumen,
 // 2013. xii+256 pp. $90.00 (cloth); $29.95 (paper).
