@@ -34,7 +34,7 @@ func main() {
 	if *listTests {
 		fmt.Println(`CurrencyInTitle
 EndPageBeforeStartPage
-ExcessivePuctuation
+ExcessivePunctuation
 InvalidCollection
 InvalidEndPage
 InvalidStartPage

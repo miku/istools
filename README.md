@@ -14,7 +14,7 @@ Usage
 $ islint -ls
 CurrencyInTitle
 EndPageBeforeStartPage
-ExcessivePuctuation
+ExcessivePunctuation
 InvalidCollection
 InvalidEndPage
 InvalidStartPage
