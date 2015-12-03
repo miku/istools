@@ -21,7 +21,7 @@ var (
 
 func main() {
 	verbose := flag.Bool("verbose", false, "show every error")
-	showVersion := flag.Bool("version", false, "show version and exit")
+	showVersion := flag.Bool("v", false, "show version and exit")
 
 	flag.Parse()
 
