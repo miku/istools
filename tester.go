@@ -164,9 +164,9 @@ func AllowedCollectionNames(is finc.IntermediateSchema) error {
 
 // SubtitleRepetition, refs #6553.
 func SubtitleRepetition(is finc.IntermediateSchema) error {
-	if strings.Contains(is.ArticleTitle, is.ArticleSubtitle) {
+	if is.ArticleSubtitle != "" && strings.Contains(is.ArticleTitle, is.ArticleSubtitle) {
 		return QualityIssue{Kind: RepeatedSubtitle, Record: is,
-			Message: fmt.Sprintf("%s: %s", is.ArticleTitle, is.ArticleSubtitle)}
+			Message: fmt.Sprintf("TITLE: %s, SUBTITLE: %s", is.ArticleTitle, is.ArticleSubtitle)}
 	}
 	return nil
 }
