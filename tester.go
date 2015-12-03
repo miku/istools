@@ -28,6 +28,7 @@ const (
 	InvalidCollection
 	RepeatedSubtitle
 	CurrencyInTitle
+	ExcessivePuctuation
 )
 
 var (
@@ -88,6 +89,7 @@ var DefaultTests = []RecordTester{
 	RecordTesterFunc(AllowedCollectionNames),
 	RecordTesterFunc(SubtitleRepetition),
 	RecordTesterFunc(NoCurrencyInTitle),
+	RecordTesterFunc(NoExcessivePuctuation),
 }
 
 // KeyLength checks the length of the record id. memcachedb limits this to 250
@@ -179,6 +181,21 @@ var currencyPattern = regexp.MustCompile(`[€$¥][+-]?[0-9]{1,3}(?:[0-9]*(?:[.,
 func NoCurrencyInTitle(is finc.IntermediateSchema) error {
 	if currencyPattern.MatchString(is.ArticleTitle) {
 		return QualityIssue{Kind: CurrencyInTitle, Record: is, Message: is.ArticleTitle}
+	}
+	return nil
+}
+
+var suspiciousPatterns = []string{
+	"?????", "!!!!!", ".....",
+}
+
+// NoExcessivePuctuation should detect things like this title:
+// CrossRef????????????? https://goo.gl/AD0V1o
+func NoExcessivePuctuation(is finc.IntermediateSchema) error {
+	for _, p := range suspiciousPatterns {
+		if strings.Contains(is.ArticleTitle, p) {
+			return QualityIssue{Kind: ExcessivePuctuation, Record: is, Message: is.ArticleTitle}
+		}
 	}
 	return nil
 }
