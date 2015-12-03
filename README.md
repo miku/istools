@@ -11,6 +11,20 @@ Usage
 -----
 
 ```sh
+$ islint -ls
+CurrencyInTitle
+EndPageBeforeStartPage
+ExcessivePuctuation
+InvalidCollection
+InvalidEndPage
+InvalidStartPage
+InvalidURL
+KeyTooLong
+PublicationDateTooEarly
+PublicationDateTooLate
+RepeatedSubtitle
+SuspiciousPageCount
+
 $ islint < file.is
 2015/12/03 14:45:55 1000000
 2015/12/03 14:45:55 1000000 total, 911306 ok, 88694 or 9.733% with issues
