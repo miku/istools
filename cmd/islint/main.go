@@ -22,11 +22,28 @@ var (
 func main() {
 	verbose := flag.Bool("verbose", false, "show every error")
 	showVersion := flag.Bool("v", false, "show version and exit")
+	listTests := flag.Bool("ls", false, "list tests")
 
 	flag.Parse()
 
 	if *showVersion {
 		fmt.Println(version)
+		os.Exit(0)
+	}
+
+	if *listTests {
+		fmt.Println(`CurrencyInTitle
+EndPageBeforeStartPage
+ExcessivePuctuation
+InvalidCollection
+InvalidEndPage
+InvalidStartPage
+InvalidURL
+KeyTooLong
+PublicationDateTooEarly
+PublicationDateTooLate
+RepeatedSubtitle
+SuspiciousPageCount`)
 		os.Exit(0)
 	}
 
