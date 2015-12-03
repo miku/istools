@@ -47,4 +47,11 @@ $ islint < file.is
                         CurrencyInTitle:7511 InvalidStartPage:731
                         SuspiciousPageCount:5]
 ...
+2015/12/03 16:01:27 88521109 total, 83013026 ok, 5508083 or 6.635% with issues
+2015/12/03 16:01:27 map[CurrencyInTitle:330554 InvalidStartPage:90924
+                        SuspiciousPageCount:63 InvalidURL:37
+                        PublicationDateTooLate:4 PublicationDateTooEarly:582577
+                        RepeatedSubtitle:2402953 EndPageBeforeStartPage:81716
+                        InvalidCollection:2060252 ExcessivePuctuation:3169
+                        InvalidEndPage:3856]
 ```
