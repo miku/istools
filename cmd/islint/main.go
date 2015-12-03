@@ -14,11 +14,21 @@ import (
 	"github.com/miku/span/finc"
 )
 
-var tests = islint.DefaultTests
+var (
+	tests   = islint.DefaultTests
+	version = "0.1.0"
+)
 
 func main() {
 	verbose := flag.Bool("verbose", false, "show every error")
+	showVersion := flag.Bool("version", false, "show version and exit")
+
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Println(version)
+		os.Exit(0)
+	}
 
 	var rdr io.Reader
 
