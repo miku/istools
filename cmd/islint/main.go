@@ -40,11 +40,11 @@ InvalidEndPage
 InvalidStartPage
 InvalidURL
 KeyTooLong
+NoPublisher
 PublicationDateTooEarly
 PublicationDateTooLate
 RepeatedSubtitle
-SuspiciousPageCount
-NoPublisher`)
+SuspiciousPageCount`)
 		os.Exit(0)
 	}
 
