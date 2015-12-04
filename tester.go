@@ -40,63 +40,64 @@ var (
 	// AllowedCollections
 	AllowedCollections = assetutil.MustLoadStringSet("assets/collections/collections.tsv",
 		"assets/collections/crossref.tsv")
+
+	// currencyPattern is a rather narrow pattern:
+	// http://rubular.com/r/WjcnjhckZq, used by NoCurrencyInTitle
+	currencyPattern = regexp.MustCompile(`[€$¥][+-]?[0-9]{1,3}(?:[0-9]*(?:[.,][0-9]{2})?|(?:,[0-9]{3})*(?:\.[0-9]{2})?|(?:\.[0-9]{3})*(?:,[0-9]{2})?)`)
+	// suspiciousPatterns, used by NoExcessivePunctuation
+	suspiciousPatterns = []string{"?????", "!!!!!", "....."}
 )
 
-type QualityIssue struct {
+// Issue contains information about a quality issue in an intermediate schema
+// record.
+type Issue struct {
 	Kind    Kind
 	Record  finc.IntermediateSchema
 	Message string
 }
 
-func (e QualityIssue) Error() string {
+// Error formats the error.
+func (e Issue) Error() string {
 	return fmt.Sprintf("%s: %s: %s", e.Record.RecordID, e.Kind, e.Message)
 }
 
-func (e QualityIssue) TSV() string {
+// TSV returns a tab representation.
+func (e Issue) TSV() string {
 	return fmt.Sprintf("%s\t%s\t%s", e.Record.RecordID, e.Kind, e.Message)
 }
 
 // TestSuite is a group of tests.
-type TestSuite []RecordTester
+type TestSuite []Tester
 
-// RecordTester is a intermediate record checker.
-type RecordTester interface {
+// Tester is a intermediate record checker.
+type Tester interface {
 	TestRecord(finc.IntermediateSchema) error
 }
 
-// DelegatingRecordTester delegates testing to a passed in function.
-type DelegatingRecordTester struct {
-	f func(finc.IntermediateSchema) error
+// TesterFunc makes a function satisfy an interface.
+type TesterFunc func(finc.IntermediateSchema) error
+
+// TestRecord delegates test to the given func.
+func (f TesterFunc) TestRecord(is finc.IntermediateSchema) error {
+	return f(is)
 }
 
-// TestRecord fulfills the interface.
-func (t DelegatingRecordTester) TestRecord(is finc.IntermediateSchema) error {
-	return t.f(is)
-
-}
-
-// RecordTesterFunc turns any function into a RecordTester.
-// TODO(miku): convert RecordTesterFunc to type
-func RecordTesterFunc(tester func(finc.IntermediateSchema) error) RecordTester {
-	return DelegatingRecordTester{f: tester}
-}
-
-var DefaultTests = []RecordTester{
-	RecordTesterFunc(KeyLength),
-	RecordTesterFunc(PlausiblePageCount),
-	RecordTesterFunc(ValidURL),
-	RecordTesterFunc(PlausibleDate),
-	RecordTesterFunc(AllowedCollectionNames),
-	RecordTesterFunc(SubtitleRepetition),
-	RecordTesterFunc(NoCurrencyInTitle),
-	RecordTesterFunc(NoExcessivePunctuation),
+var DefaultTests = []Tester{
+	TesterFunc(KeyLength),
+	TesterFunc(PlausiblePageCount),
+	TesterFunc(ValidURL),
+	TesterFunc(PlausibleDate),
+	TesterFunc(AllowedCollectionNames),
+	TesterFunc(SubtitleRepetition),
+	TesterFunc(NoCurrencyInTitle),
+	TesterFunc(NoExcessivePunctuation),
 }
 
 // KeyLength checks the length of the record id. memcachedb limits this to 250
 // bytes.
 func KeyLength(is finc.IntermediateSchema) error {
 	if len(is.RecordID) > span.KeyLengthLimit {
-		return QualityIssue{Kind: KeyTooLong, Record: is}
+		return Issue{Kind: KeyTooLong, Record: is}
 	}
 	return nil
 }
@@ -105,7 +106,7 @@ func KeyLength(is finc.IntermediateSchema) error {
 func ValidURL(is finc.IntermediateSchema) error {
 	for _, s := range is.URL {
 		if _, err := url.Parse(s); err != nil {
-			return QualityIssue{Kind: InvalidURL, Record: is, Message: s}
+			return Issue{Kind: InvalidURL, Record: is, Message: s}
 		}
 	}
 	return nil
@@ -114,10 +115,10 @@ func ValidURL(is finc.IntermediateSchema) error {
 // PlausibleDate checks for suspicious dates, refs. #5686.
 func PlausibleDate(is finc.IntermediateSchema) error {
 	if is.Date.Before(EarliestDate) {
-		return QualityIssue{Kind: PublicationDateTooEarly, Record: is, Message: is.Date.String()}
+		return Issue{Kind: PublicationDateTooEarly, Record: is, Message: is.Date.String()}
 	}
 	if is.Date.After(LatestDate) {
-		return QualityIssue{Kind: PublicationDateTooLate, Record: is, Message: is.Date.String()}
+		return Issue{Kind: PublicationDateTooLate, Record: is, Message: is.Date.String()}
 	}
 	return nil
 }
@@ -129,25 +130,25 @@ func PlausiblePageCount(is finc.IntermediateSchema) error {
 		maxPageCount  = 20000
 	)
 	if len(is.StartPage) > maxPageDigits {
-		return QualityIssue{Kind: InvalidStartPage, Record: is, Message: is.StartPage}
+		return Issue{Kind: InvalidStartPage, Record: is, Message: is.StartPage}
 	}
 	if len(is.EndPage) > maxPageDigits {
-		return QualityIssue{Kind: InvalidEndPage, Record: is, Message: is.EndPage}
+		return Issue{Kind: InvalidEndPage, Record: is, Message: is.EndPage}
 	}
 	if is.StartPage != "" && is.EndPage != "" {
 		if s, err := strconv.Atoi(is.StartPage); err == nil {
 			if e, err := strconv.Atoi(is.EndPage); err == nil {
 				if e < s {
-					return QualityIssue{Kind: EndPageBeforeStartPage, Record: is, Message: fmt.Sprintf("%v-%v", s, e)}
+					return Issue{Kind: EndPageBeforeStartPage, Record: is, Message: fmt.Sprintf("%v-%v", s, e)}
 				}
 				if e-s > maxPageCount {
-					return QualityIssue{Kind: SuspiciousPageCount, Record: is, Message: fmt.Sprintf("%v-%v", s, e)}
+					return Issue{Kind: SuspiciousPageCount, Record: is, Message: fmt.Sprintf("%v-%v", s, e)}
 				}
 			} else {
-				return QualityIssue{Kind: InvalidEndPage, Record: is, Message: is.EndPage}
+				return Issue{Kind: InvalidEndPage, Record: is, Message: is.EndPage}
 			}
 		} else {
-			return QualityIssue{Kind: InvalidStartPage, Record: is, Message: is.StartPage}
+			return Issue{Kind: InvalidStartPage, Record: is, Message: is.StartPage}
 		}
 	}
 	return nil
@@ -157,7 +158,7 @@ func PlausiblePageCount(is finc.IntermediateSchema) error {
 // stored under assets, refs. #6496.
 func AllowedCollectionNames(is finc.IntermediateSchema) error {
 	if !AllowedCollections.Contains(is.MegaCollection) {
-		return QualityIssue{Kind: InvalidCollection, Record: is, Message: is.MegaCollection}
+		return Issue{Kind: InvalidCollection, Record: is, Message: is.MegaCollection}
 	}
 	return nil
 }
@@ -165,14 +166,11 @@ func AllowedCollectionNames(is finc.IntermediateSchema) error {
 // SubtitleRepetition, refs #6553.
 func SubtitleRepetition(is finc.IntermediateSchema) error {
 	if is.ArticleSubtitle != "" && strings.Contains(is.ArticleTitle, is.ArticleSubtitle) {
-		return QualityIssue{Kind: RepeatedSubtitle, Record: is,
+		return Issue{Kind: RepeatedSubtitle, Record: is,
 			Message: fmt.Sprintf("TITLE: %s, SUBTITLE: %s", is.ArticleTitle, is.ArticleSubtitle)}
 	}
 	return nil
 }
-
-// currencyPattern is a rather narrow pattern: http://rubular.com/r/WjcnjhckZq
-var currencyPattern = regexp.MustCompile(`[€$¥][+-]?[0-9]{1,3}(?:[0-9]*(?:[.,][0-9]{2})?|(?:,[0-9]{3})*(?:\.[0-9]{2})?|(?:\.[0-9]{3})*(?:,[0-9]{2})?)`)
 
 // NoCurrencyInTitle, e.g. http://goo.gl/HACBcW
 // Cartier , Marie . Baby, You Are My Religion: Women, Gay Bars, and Theology
@@ -180,13 +178,9 @@ var currencyPattern = regexp.MustCompile(`[€$¥][+-]?[0-9]{1,3}(?:[0-9]*(?:[.,
 // 2013. xii+256 pp. $90.00 (cloth); $29.95 (paper).
 func NoCurrencyInTitle(is finc.IntermediateSchema) error {
 	if currencyPattern.MatchString(is.ArticleTitle) {
-		return QualityIssue{Kind: CurrencyInTitle, Record: is, Message: is.ArticleTitle}
+		return Issue{Kind: CurrencyInTitle, Record: is, Message: is.ArticleTitle}
 	}
 	return nil
-}
-
-var suspiciousPatterns = []string{
-	"?????", "!!!!!", ".....",
 }
 
 // NoExcessivePuctuation should detect things like this title:
@@ -194,7 +188,7 @@ var suspiciousPatterns = []string{
 func NoExcessivePunctuation(is finc.IntermediateSchema) error {
 	for _, p := range suspiciousPatterns {
 		if strings.Contains(is.ArticleTitle, p) {
-			return QualityIssue{Kind: ExcessivePunctuation, Record: is, Message: is.ArticleTitle}
+			return Issue{Kind: ExcessivePunctuation, Record: is, Message: is.ArticleTitle}
 		}
 	}
 	return nil

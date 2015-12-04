@@ -100,7 +100,7 @@ SuspiciousPageCount`)
 			if err != nil {
 				hasIssues = true
 				switch e := err.(type) {
-				case islint.QualityIssue:
+				case islint.Issue:
 					if *verbose {
 						fmt.Println(e.TSV())
 					}
