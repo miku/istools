@@ -29,6 +29,7 @@ const (
 	RepeatedSubtitle
 	CurrencyInTitle
 	ExcessivePunctuation
+	NoPublisher
 )
 
 var (
@@ -91,6 +92,7 @@ var DefaultTests = []Tester{
 	TesterFunc(SubtitleRepetition),
 	TesterFunc(NoCurrencyInTitle),
 	TesterFunc(NoExcessivePunctuation),
+	TesterFunc(HasPublisher),
 }
 
 // KeyLength checks the length of the record id. memcachedb limits this to 250
@@ -189,6 +191,25 @@ func NoExcessivePunctuation(is finc.IntermediateSchema) error {
 	for _, p := range suspiciousPatterns {
 		if strings.Contains(is.ArticleTitle, p) {
 			return Issue{Kind: ExcessivePunctuation, Record: is, Message: is.ArticleTitle}
+		}
+	}
+	return nil
+}
+
+// HasPublisher tests, whether a publisher is given.
+func HasPublisher(is finc.IntermediateSchema) error {
+	switch len(is.Publishers) {
+	case 0:
+		return Issue{Kind: NoPublisher, Record: is}
+	case 1:
+		if is.Publishers[0] == "" {
+			return Issue{Kind: NoPublisher, Record: is}
+		}
+	default:
+		for _, p := range is.Publishers {
+			if p == "" {
+				return Issue{Kind: NoPublisher, Record: is, Message: "empty string as publisher name"}
+			}
 		}
 	}
 	return nil
