@@ -5,7 +5,7 @@ Intermediate Schema linter. [What is linting?](http://stackoverflow.com/question
 
 Documentation on [godoc.org](https://godoc.org/github.com/miku/islint).
 
-Linux 64-bit toy: [islint](https://github.com/miku/islint/releases/download/v0.1.0/islint)
+Linux 64-bit toy: [islint](https://github.com/miku/islint/releases/download/v0.1.1/islint)
 
 Usage
 -----
