@@ -43,7 +43,8 @@ KeyTooLong
 PublicationDateTooEarly
 PublicationDateTooLate
 RepeatedSubtitle
-SuspiciousPageCount`)
+SuspiciousPageCount
+NoPublisher`)
 		os.Exit(0)
 	}
 
