@@ -20,7 +20,7 @@ import (
 var (
 	tests   = islint.DefaultTests
 	Verbose = false
-	version = "0.1.3"
+	version = "0.1.4"
 	start   = time.Now()
 )
 
@@ -88,6 +88,7 @@ func (s Stats) MarshalJSON() ([]byte, error) {
 		"total":    total,
 		"damaged":  damaged,
 		"ratio":    fmt.Sprintf("%0.3f", ratio),
+		"start":    start,
 		"elapsed":  time.Since(start).Seconds(),
 	})
 }
