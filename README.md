@@ -14,15 +14,18 @@ Usage
 $ islint -ls
 CurrencyInTitle
 EndPageBeforeStartPage
+EtAlAuthorName
 ExcessivePunctuation
 InvalidCollection
 InvalidEndPage
 InvalidStartPage
 InvalidURL
 KeyTooLong
+NoPublisher
 PublicationDateTooEarly
 PublicationDateTooLate
 RepeatedSubtitle
+ShortAuthorName
 SuspiciousPageCount
 
 $ islint < file.is
