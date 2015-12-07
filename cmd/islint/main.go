@@ -21,7 +21,7 @@ import (
 var (
 	tests   = islint.DefaultTests
 	Verbose = false
-	version = "0.1.4"
+	version = "0.1.5"
 	start   = time.Now()
 )
 
