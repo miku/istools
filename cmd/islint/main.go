@@ -45,6 +45,7 @@ NAInAuthorName
 NoPublisher
 PublicationDateTooEarly
 PublicationDateTooLate
+RepeatedSlash
 RepeatedSubtitle
 ShortAuthorName
 SuspiciousPageCount

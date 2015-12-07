@@ -34,6 +34,7 @@ const (
 	EtAlAuthorName
 	NAInAuthorName
 	WhitespaceAuthor
+	RepeatedSlash
 )
 
 var (
@@ -98,6 +99,7 @@ var DefaultTests = []Tester{
 	TesterFunc(NoExcessivePunctuation),
 	TesterFunc(HasPublisher),
 	TesterFunc(FeasibleAuthor),
+	TesterFunc(NoRepeatedSlash),
 }
 
 // KeyLength checks the length of the record id. memcachedb limits this to 250
@@ -237,6 +239,14 @@ func FeasibleAuthor(is finc.IntermediateSchema) error {
 		if len(s) > 0 && strings.TrimSpace(s) == "" {
 			return Issue{Kind: WhitespaceAuthor, Record: is, Message: "author contains whitespace only"}
 		}
+	}
+	return nil
+}
+
+// NoRepeatedSlash checks a DOI for repeated slashes, refs. #6312.
+func NoRepeatedSlash(is finc.IntermediateSchema) error {
+	if strings.Contains(is.DOI, "//") {
+		return Issue{Kind: RepeatedSlash, Record: is, Message: is.DOI}
 	}
 	return nil
 }
