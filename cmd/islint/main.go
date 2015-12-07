@@ -78,14 +78,14 @@ func (s Stats) MarshalJSON() ([]byte, error) {
 		dist[k.String()] = v
 	}
 
-	ratio := (100 / float64(total)) * float64(damaged)
+	percent := (100 / float64(total)) * float64(damaged)
 
 	return json.Marshal(map[string]interface{}{
 		"dist":     dist,
 		"errcount": errcount,
 		"total":    total,
 		"damaged":  damaged,
-		"ratio":    fmt.Sprintf("%0.3f", ratio),
+		"percent":  fmt.Sprintf("%0.3f", percent),
 		"start":    start,
 		"elapsed":  time.Since(start).Seconds(),
 	})
