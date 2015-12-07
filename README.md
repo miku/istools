@@ -21,12 +21,14 @@ InvalidEndPage
 InvalidStartPage
 InvalidURL
 KeyTooLong
+NAInAuthorName
 NoPublisher
 PublicationDateTooEarly
 PublicationDateTooLate
 RepeatedSubtitle
 ShortAuthorName
 SuspiciousPageCount
+WhitespaceAuthor
 
 $ islint < file.is
 2015/12/03 14:45:55 1000000

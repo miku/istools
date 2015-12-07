@@ -41,12 +41,14 @@ InvalidEndPage
 InvalidStartPage
 InvalidURL
 KeyTooLong
+NAInAuthorName
 NoPublisher
 PublicationDateTooEarly
 PublicationDateTooLate
 RepeatedSubtitle
 ShortAuthorName
-SuspiciousPageCount`)
+SuspiciousPageCount
+WhitespaceAuthor`)
 		os.Exit(0)
 	}
 
