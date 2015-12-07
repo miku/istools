@@ -33,6 +33,7 @@ const (
 	ShortAuthorName
 	EtAlAuthorName
 	NAInAuthorName
+	WhitespaceAuthor
 )
 
 var (
@@ -219,7 +220,7 @@ func HasPublisher(is finc.IntermediateSchema) error {
 	return nil
 }
 
-// FeasibleAuthor checks for a few suspicious authors patterns, refs. #4892.
+// FeasibleAuthor checks for a few suspicious authors patterns, refs. #4892, #4940.
 func FeasibleAuthor(is finc.IntermediateSchema) error {
 	for _, author := range is.Authors {
 		s := author.String()
@@ -232,6 +233,9 @@ func FeasibleAuthor(is finc.IntermediateSchema) error {
 		}
 		if strings.Contains(lower, "&na;") {
 			return Issue{Kind: NAInAuthorName, Record: is, Message: s}
+		}
+		if len(s) > 0 && strings.TrimSpace(s) == "" {
+			return Issue{Kind: WhitespaceAuthor, Record: is, Message: "author contains whitespace only"}
 		}
 	}
 	return nil
