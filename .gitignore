@@ -30,9 +30,7 @@ _*.deb
 -*.rpm
 /packaging/deb/islint/usr
 /islint
-
+/fixtures
 NOTES.md
 /assetutil/bindata.go
-.vagrant/*
-vagrant.key
 kind_string.go
