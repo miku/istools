@@ -34,6 +34,7 @@ func main() {
 	if *listTests {
 		fmt.Println(`CurrencyInTitle
 EndPageBeforeStartPage
+EtAlAuthorName
 ExcessivePunctuation
 InvalidCollection
 InvalidEndPage
@@ -44,6 +45,7 @@ NoPublisher
 PublicationDateTooEarly
 PublicationDateTooLate
 RepeatedSubtitle
+ShortAuthorName
 SuspiciousPageCount`)
 		os.Exit(0)
 	}
