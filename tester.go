@@ -30,6 +30,8 @@ const (
 	CurrencyInTitle
 	ExcessivePunctuation
 	NoPublisher
+	ShortAuthorName
+	EtAlAuthorName
 )
 
 var (
@@ -210,6 +212,20 @@ func HasPublisher(is finc.IntermediateSchema) error {
 			if p == "" {
 				return Issue{Kind: NoPublisher, Record: is, Message: "empty string as publisher name"}
 			}
+		}
+	}
+	return nil
+}
+
+// FeasibleAuthor checks for a few suspicious authors patterns, refs. #4892.
+func FeasibleAuthor(is finc.IntermediateSchema) error {
+	for _, author := range is.Authors {
+		s := author.String()
+		if len(s) < 5 {
+			return Issue{Kind: ShortAuthorName, Record: is, Message: s}
+		}
+		if strings.HasPrefix(strings.ToLower(s), "et al") {
+			return Issue{Kind: EtAlAuthorName, Record: is, Message: s}
 		}
 	}
 	return nil

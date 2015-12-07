@@ -4,9 +4,9 @@ package islint
 
 import "fmt"
 
-const _Kind_name = "KeyTooLongInvalidStartPageInvalidEndPageEndPageBeforeStartPageInvalidURLSuspiciousPageCountPublicationDateTooEarlyPublicationDateTooLateInvalidCollectionRepeatedSubtitleCurrencyInTitleExcessivePunctuationNoPublisher"
+const _Kind_name = "KeyTooLongInvalidStartPageInvalidEndPageEndPageBeforeStartPageInvalidURLSuspiciousPageCountPublicationDateTooEarlyPublicationDateTooLateInvalidCollectionRepeatedSubtitleCurrencyInTitleExcessivePunctuationNoPublisherShortAuthorNameEtAlAuthorName"
 
-var _Kind_index = [...]uint8{10, 26, 40, 62, 72, 91, 114, 136, 153, 169, 184, 204, 215}
+var _Kind_index = [...]uint8{10, 26, 40, 62, 72, 91, 114, 136, 153, 169, 184, 204, 215, 230, 244}
 
 func (i Kind) String() string {
 	if i < 0 || i >= Kind(len(_Kind_index)) {
