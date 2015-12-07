@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"os"
 	"runtime"
 	"strconv"
@@ -125,6 +126,7 @@ func main() {
 	verbose := flag.Bool("verbose", false, "show every error")
 	showVersion := flag.Bool("v", false, "show version and exit")
 	listTests := flag.Bool("ls", false, "list tests")
+	sample := flag.Float64("sample", 1.0, "ratio of records to test")
 
 	flag.Parse()
 
@@ -195,6 +197,9 @@ WhitespaceAuthor`)
 		}
 		if err != nil {
 			log.Fatal(err)
+		}
+		if rand.Float64() > *sample {
+			continue
 		}
 		if i == size {
 			ba := make([][]byte, len(batch))
