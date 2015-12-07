@@ -14,7 +14,7 @@ import (
 )
 
 //go:generate stringer -type=Kind
-type Kind int
+type Kind uint16
 
 const (
 	KeyTooLong Kind = iota
@@ -32,6 +32,7 @@ const (
 	NoPublisher
 	ShortAuthorName
 	EtAlAuthorName
+	NAInAuthorName
 )
 
 var (
@@ -95,6 +96,7 @@ var DefaultTests = []Tester{
 	TesterFunc(NoCurrencyInTitle),
 	TesterFunc(NoExcessivePunctuation),
 	TesterFunc(HasPublisher),
+	TesterFunc(FeasibleAuthor),
 }
 
 // KeyLength checks the length of the record id. memcachedb limits this to 250
@@ -224,8 +226,12 @@ func FeasibleAuthor(is finc.IntermediateSchema) error {
 		if len(s) < 5 {
 			return Issue{Kind: ShortAuthorName, Record: is, Message: s}
 		}
-		if strings.HasPrefix(strings.ToLower(s), "et al") {
+		lower := strings.ToLower(s)
+		if strings.HasPrefix(lower, "et al") {
 			return Issue{Kind: EtAlAuthorName, Record: is, Message: s}
+		}
+		if strings.Contains(lower, "&na;") {
+			return Issue{Kind: NAInAuthorName, Record: is, Message: s}
 		}
 	}
 	return nil

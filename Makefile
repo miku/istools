@@ -41,6 +41,7 @@ clean:
 	rm -f islint-*rpm
 	rm -rf ./packaging/deb/islint/usr
 	rm -f assetutil/bindata.go
+	rm -f kind_string.go
 
 deb: $(TARGETS)
 	mkdir -p packaging/deb/islint/usr/sbin
