@@ -15,6 +15,16 @@ Usage
 -----
 
 ```sh
+$ islint -h
+Usage of islint:
+  -ls
+        list tests
+  -sample float
+        ratio of records to test (default 1)
+  -v    show version and exit
+  -verbose
+        show every error
+
 $ islint -ls
 CurrencyInTitle
 EndPageBeforeStartPage
@@ -35,33 +45,60 @@ ShortAuthorName
 SuspiciousPageCount
 WhitespaceAuthor
 
-$ islint < file.is
-2015/12/03 14:45:55 1000000
-2015/12/03 14:45:55 1000000 total, 911306 ok, 88694 or 9.733% with issues
-2015/12/03 14:45:55 map[SuspiciousPageCount:5 ExcessivePuctuation:5
-                        CurrencyInTitle:1007 PublicationDateTooEarly:52361
-                        RepeatedSubtitle:18294 EndPageBeforeStartPage:390
-                        InvalidStartPage:231 InvalidCollection:16782]
-2015/12/03 14:46:47 2000000
-2015/12/03 14:46:47 2000000 total, 1786939 ok, 213061 or 11.923% with issues
-2015/12/03 14:46:47 map[CurrencyInTitle:5668 InvalidStartPage:685
-                        SuspiciousPageCount:5 PublicationDateTooEarly:146781
-                        RepeatedSubtitle:34849 EndPageBeforeStartPage:5146
-                        InvalidCollection:20572 ExcessivePuctuation:381
-                        InvalidEndPage:7]
-2015/12/03 14:47:37 3000000
-2015/12/03 14:47:37 3000000 total, 2651675 ok, 348325 or 13.136% with issues
-2015/12/03 14:47:37 map[PublicationDateTooEarly:195313 RepeatedSubtitle:118735
-                        EndPageBeforeStartPage:5712 InvalidCollection:21339
-                        ExcessivePuctuation:388 InvalidEndPage:7
-                        CurrencyInTitle:7511 InvalidStartPage:731
-                        SuspiciousPageCount:5]
+$ islint < file.is | jq
+{
+  "damaged": 53262,
+  "dist": {
+    "CurrencyInTitle": 2177,
+    "EndPageBeforeStartPage": 352,
+    "EtAlAuthorName": 29,
+    "ExcessivePunctuation": 8,
+    "InvalidCollection": 6006,
+    "InvalidStartPage": 220,
+    "PublicationDateTooEarly": 3680,
+    "RepeatedSlash": 13,
+    "RepeatedSubtitle": 37501,
+    "ShortAuthorName": 4352
+  },
+  "elapsed": 47.49654878,
+  "errcount": {
+    "0": 946738,
+    "1": 52188,
+    "2": 1072,
+    "3": 2
+  },
+  "ratio": "5.326",
+  "start": "2015-12-07T18:41:06.50489407+01:00",
+  "total": 1000000
+}
 ...
-2015/12/03 16:01:27 88521109 total, 83013026 ok, 5508083 or 6.635% with issues
-2015/12/03 16:01:27 map[CurrencyInTitle:330554 InvalidStartPage:90924
-                        SuspiciousPageCount:63 InvalidURL:37
-                        PublicationDateTooLate:4 PublicationDateTooEarly:582577
-                        RepeatedSubtitle:2402953 EndPageBeforeStartPage:81716
-                        InvalidCollection:2060252 ExcessivePuctuation:3169
-                        InvalidEndPage:3856]
+{
+  "damaged": 1994583,
+  "dist": {
+    "CurrencyInTitle": 33179,
+    "EndPageBeforeStartPage": 8391,
+    "EtAlAuthorName": 1363,
+    "ExcessivePunctuation": 337,
+    "InvalidCollection": 206737,
+    "InvalidEndPage": 387,
+    "InvalidStartPage": 9087,
+    "InvalidURL": 1,
+    "NoPublisher": 1393457,
+    "PublicationDateTooEarly": 58379,
+    "RepeatedSlash": 6717,
+    "RepeatedSubtitle": 242985,
+    "ShortAuthorName": 97244,
+    "SuspiciousPageCount": 5
+  },
+  "elapsed": 509.939547991,
+  "errcount": {
+    "0": 6913680,
+    "1": 1931478,
+    "2": 62524,
+    "3": 581
+  },
+  "ratio": "22.390",
+  "start": "2015-12-07T18:41:06.50489407+01:00",
+  "total": 8908263
+}
 ```
