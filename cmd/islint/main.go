@@ -19,12 +19,15 @@ import (
 )
 
 var (
+	// tests to run, could be made configurable later
 	tests   = islint.DefaultTests
-	Verbose = false
+	verbose *bool
+	details *bool
 	version = "0.1.5"
 	start   = time.Now()
 )
 
+// worker parses JSON and runs all tests on an intermediate schema record.
 func worker(queue chan [][]byte, out chan []islint.Issue, wg *sync.WaitGroup) {
 	defer wg.Done()
 	for batch := range queue {
@@ -48,20 +51,12 @@ func worker(queue chan [][]byte, out chan []islint.Issue, wg *sync.WaitGroup) {
 	}
 }
 
-type KindFrequencyMap map[islint.Kind]int
-
-func (m KindFrequencyMap) MarshalJSON() ([]byte, error) {
-	sm := make(map[string]int)
-	for k, v := range m {
-		sm[k.String()] = v
-	}
-	return json.Marshal(sm)
-}
-
 // Stats keeps basic stats on issues.
 type Stats struct {
+	// IssueDistribution counts the number of occurences per issue kind.
 	IssueDistribution map[islint.Kind]int `json:"issues"`
-	IssuesPerRecord   map[int]int         `json:"frequency"`
+	// IssuesPerRecord count the number of issues per record.
+	IssuesPerRecord map[int]int `json:"frequency"`
 }
 
 // MarshalJSON calculates a few extra metrics on the fly.
@@ -69,19 +64,21 @@ func (s Stats) MarshalJSON() ([]byte, error) {
 	var total, damaged int
 	errcount := make(map[string]int)
 
-	for k, v := range s.IssuesPerRecord {
-		total += v
-		if k > 0 {
-			damaged += v
+	for issues, count := range s.IssuesPerRecord {
+		errcount[strconv.Itoa(issues)] = count
+
+		total += count
+		if issues > 0 {
+			damaged += count
 		}
-		errcount[strconv.Itoa(k)] = v
 	}
-	ratio := (100 / float64(total)) * float64(damaged)
 
 	dist := make(map[string]int)
 	for k, v := range s.IssueDistribution {
 		dist[k.String()] = v
 	}
+
+	ratio := (100 / float64(total)) * float64(damaged)
 
 	return json.Marshal(map[string]interface{}{
 		"dist":     dist,
@@ -94,14 +91,18 @@ func (s Stats) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func writer(in chan []islint.Issue, done chan bool) {
-	stats := Stats{IssueDistribution: make(map[islint.Kind]int), IssuesPerRecord: make(map[int]int)}
+// writer will dump a list of issues as JSON to stdout. Intermediate results are dumped
+func writer(batches chan []islint.Issue, done chan bool) {
+	stats := Stats{
+		IssueDistribution: make(map[islint.Kind]int),
+		IssuesPerRecord:   make(map[int]int),
+	}
 	var i int
-	for issues := range in {
+	for issues := range batches {
 		stats.IssuesPerRecord[len(issues)]++
 		for _, issue := range issues {
 			stats.IssueDistribution[issue.Kind]++
-			if Verbose {
+			if *details {
 				fmt.Println(issue.TSV())
 			}
 		}
@@ -111,19 +112,27 @@ func writer(in chan []islint.Issue, done chan bool) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Println(string(b))
+			if *verbose {
+				fmt.Fprintln(os.Stderr, string(b))
+			}
 		}
 	}
 	b, err := json.Marshal(stats)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(b))
+	if *details {
+		fmt.Fprintln(os.Stderr, string(b))
+	} else {
+		fmt.Println(string(b))
+	}
+
 	done <- true
 }
 
 func main() {
-	verbose := flag.Bool("verbose", false, "show every error")
+	details = flag.Bool("details", false, "show error details for every record as TSV")
+	verbose = flag.Bool("verbose", false, "show progress")
 	showVersion := flag.Bool("v", false, "show version and exit")
 	listTests := flag.Bool("ls", false, "list tests")
 	sample := flag.Float64("sample", 1.0, "ratio of records to test")
@@ -134,8 +143,6 @@ func main() {
 		fmt.Println(version)
 		os.Exit(0)
 	}
-
-	Verbose = *verbose
 
 	if *listTests {
 		fmt.Println(`CurrencyInTitle
