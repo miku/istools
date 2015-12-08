@@ -23,7 +23,7 @@ var (
 	tests   = islint.DefaultTests
 	verbose *bool
 	details *bool
-	version = "0.1.6"
+	version = "0.1.7"
 	start   = time.Now()
 )
 
