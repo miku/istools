@@ -36,7 +36,7 @@ generate:
 
 all: $(TARGETS)
 
-islint: assets generate imports deps
+islint: assets imports generate deps
 	go build -o islint cmd/islint/main.go
 
 clean:
