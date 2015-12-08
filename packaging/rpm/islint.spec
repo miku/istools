@@ -7,7 +7,7 @@ BuildArch:  x86_64
 BuildRoot:  %{_tmppath}/%{name}-build
 Group:      System/Base
 Vendor:     UB Leipzig
-URL:        https://github.com/miku/esbulk
+URL:        https://github.com/miku/islint
 
 %description
 
@@ -28,7 +28,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/local/sbin
 
 # put the files in to the relevant directories.
 # the argument on -m is the permissions expressed as octal. (See chmod man page for details.)
-install -m 755 esbulk $RPM_BUILD_ROOT/usr/local/sbin
+install -m 755 islint $RPM_BUILD_ROOT/usr/local/sbin
 
 %post
 # the post section is where you can run commands after the rpm is installed.
