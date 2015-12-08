@@ -31,6 +31,7 @@ cover:
 	go test -cover ./...
 
 generate:
+	go get -f -u golang.org/x/tools/cmd/stringer
 	go generate
 
 all: $(TARGETS)
