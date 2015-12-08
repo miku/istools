@@ -34,3 +34,5 @@ _*.deb
 NOTES.md
 /assetutil/bindata.go
 kind_string.go
+.vagrant/
+vagrant.key
