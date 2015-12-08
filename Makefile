@@ -1,6 +1,9 @@
 SHELL = /bin/bash
 TARGETS = islint
 
+# find go-bindata executable on vm
+export PATH := /home/vagrant/bin:$(PATH)
+
 # http://docs.travis-ci.com/user/languages/go/#Default-Test-Script
 test: assets deps
 	go test -v ./...
