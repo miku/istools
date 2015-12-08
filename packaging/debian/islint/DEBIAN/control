@@ -1,0 +1,9 @@
+Package: islint
+Version: 0.3.5
+Section: utils
+Priority: optional
+Architecture: amd64
+Essential: no
+Depends: libc6 (>= 2.12)
+Maintainer: Martin Czygan
+Description: Finc intermediate schema linter.
