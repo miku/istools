@@ -88,6 +88,7 @@ func (s Stats) MarshalJSON() ([]byte, error) {
 		"percent":  fmt.Sprintf("%0.3f", percent),
 		"start":    start,
 		"elapsed":  time.Since(start).Seconds(),
+		"version":  fmt.Sprintf("%s/%d", version, len(tests)),
 	})
 }
 
