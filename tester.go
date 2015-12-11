@@ -35,6 +35,7 @@ const (
 	NAInAuthorName
 	WhitespaceAuthor
 	RepeatedSlash
+	NoURL
 )
 
 var (
@@ -100,6 +101,7 @@ var DefaultTests = []Tester{
 	TesterFunc(HasPublisher),
 	TesterFunc(FeasibleAuthor),
 	TesterFunc(NoRepeatedSlash),
+	TesterFunc(HasURL),
 }
 
 // KeyLength checks the length of the record id. memcachedb limits this to 250
@@ -247,6 +249,13 @@ func FeasibleAuthor(is finc.IntermediateSchema) error {
 func NoRepeatedSlash(is finc.IntermediateSchema) error {
 	if strings.Contains(is.DOI, "//") {
 		return Issue{Kind: RepeatedSlash, Record: is, Message: is.DOI}
+	}
+	return nil
+}
+
+func HasURL(is finc.IntermediateSchema) error {
+	if len(is.URL) == 0 {
+		return Issue{Kind: NoURL, Record: is}
 	}
 	return nil
 }
