@@ -1,6 +1,6 @@
 Summary:    Finc intermediate schema linter.
 Name:       islint
-Version:    0.1.7
+Version:    0.1.8
 Release:    0
 License:    MIT
 BuildArch:  x86_64
