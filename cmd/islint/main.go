@@ -156,6 +156,7 @@ InvalidURL
 KeyTooLong
 NAInAuthorName
 NoPublisher
+NoURL
 PublicationDateTooEarly
 PublicationDateTooLate
 RepeatedSlash
