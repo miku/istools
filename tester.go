@@ -37,6 +37,7 @@ const (
 	RepeatedSlash
 	NoURL
 	NonCanonicalISSN
+	HTMLEntityInAuthorName
 )
 
 var (
@@ -56,6 +57,8 @@ var (
 	suspiciousPatterns = []string{"?????", "!!!!!", "....."}
 	// issnPattern looks for a canonical ISSN
 	issnPattern = regexp.MustCompile(`^[0-9]{4,4}-[0-9]{3,3}[0-9X]$`)
+	// htmlEntityPattern looks for leftover entities: http://rubular.com/r/flzmBzpShX
+	htmlEntityPattern = regexp.MustCompile(`&(?:[a-z\d]+|#\d+|#x[a-f\d]+);`)
 )
 
 // Issue contains information about a quality issue in an intermediate schema
@@ -228,7 +231,7 @@ func HasPublisher(is finc.IntermediateSchema) error {
 	return nil
 }
 
-// FeasibleAuthor checks for a few suspicious authors patterns, refs. #4892, #4940.
+// FeasibleAuthor checks for a few suspicious authors patterns, refs. #4892, #4940, #5895.
 func FeasibleAuthor(is finc.IntermediateSchema) error {
 	for _, author := range is.Authors {
 		s := author.String()
@@ -244,6 +247,9 @@ func FeasibleAuthor(is finc.IntermediateSchema) error {
 		}
 		if len(s) > 0 && strings.TrimSpace(s) == "" {
 			return Issue{Kind: WhitespaceAuthor, Record: is, Message: "author contains whitespace only"}
+		}
+		if htmlEntityPattern.MatchString(s) {
+			return Issue{Kind: HTMLEntityInAuthorName, Record: is, Message: s}
 		}
 	}
 	return nil

@@ -150,6 +150,7 @@ func main() {
 EndPageBeforeStartPage
 EtAlAuthorName
 ExcessivePunctuation
+HTMLEntityInAuthorName
 InvalidCollection
 InvalidEndPage
 InvalidStartPage
