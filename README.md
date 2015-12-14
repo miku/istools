@@ -36,6 +36,7 @@ InvalidStartPage
 InvalidURL
 KeyTooLong
 NAInAuthorName
+NonCanonicalISSN
 NoPublisher
 NoURL
 PublicationDateTooEarly

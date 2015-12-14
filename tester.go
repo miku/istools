@@ -36,6 +36,7 @@ const (
 	WhitespaceAuthor
 	RepeatedSlash
 	NoURL
+	NonCanonicalISSN
 )
 
 var (
@@ -53,6 +54,8 @@ var (
 	currencyPattern = regexp.MustCompile(`[€$¥][+-]?[0-9]{1,3}(?:[0-9]*(?:[.,][0-9]{2})?|(?:,[0-9]{3})*(?:\.[0-9]{2})?|(?:\.[0-9]{3})*(?:,[0-9]{2})?)`)
 	// suspiciousPatterns, used by NoExcessivePunctuation
 	suspiciousPatterns = []string{"?????", "!!!!!", "....."}
+	// issnPattern looks for a canonical ISSN
+	issnPattern = regexp.MustCompile(`^[0-9]{4,4}-[0-9]{3,3}[0-9X]$`)
 )
 
 // Issue contains information about a quality issue in an intermediate schema
@@ -102,6 +105,7 @@ var DefaultTests = []Tester{
 	TesterFunc(FeasibleAuthor),
 	TesterFunc(NoRepeatedSlash),
 	TesterFunc(HasURL),
+	TesterFunc(CanonicalISSN),
 }
 
 // KeyLength checks the length of the record id. memcachedb limits this to 250
@@ -256,6 +260,16 @@ func NoRepeatedSlash(is finc.IntermediateSchema) error {
 func HasURL(is finc.IntermediateSchema) error {
 	if len(is.URL) == 0 {
 		return Issue{Kind: NoURL, Record: is}
+	}
+	return nil
+}
+
+// CanonicalISSN checks for the canonical ISSN format 1234-567X.
+func CanonicalISSN(is finc.IntermediateSchema) error {
+	for _, issn := range append(is.ISSN, is.EISSN...) {
+		if !issnPattern.MatchString(issn) {
+			return Issue{Kind: NonCanonicalISSN, Record: is, Message: issn}
+		}
 	}
 	return nil
 }
