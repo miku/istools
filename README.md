@@ -30,6 +30,7 @@ CurrencyInTitle
 EndPageBeforeStartPage
 EtAlAuthorName
 ExcessivePunctuation
+HTMLEntityInAuthorName
 InvalidCollection
 InvalidEndPage
 InvalidStartPage
