@@ -257,6 +257,7 @@ func NoRepeatedSlash(is finc.IntermediateSchema) error {
 	return nil
 }
 
+// HasURL checks for a value in URL. This is no URL validation.
 func HasURL(is finc.IntermediateSchema) error {
 	if len(is.URL) == 0 {
 		return Issue{Kind: NoURL, Record: is}
