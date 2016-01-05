@@ -214,6 +214,10 @@ func NoExcessivePunctuation(is finc.IntermediateSchema) error {
 
 // HasPublisher tests, whether a publisher is given.
 func HasPublisher(is finc.IntermediateSchema) error {
+	// This rule is does not apply for this source.
+	if is.SourceID == "48" {
+		return nil
+	}
 	switch len(is.Publishers) {
 	case 0:
 		return Issue{Kind: NoPublisher, Record: is}
