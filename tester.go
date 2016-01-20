@@ -1,4 +1,4 @@
-package islint
+package istools
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/miku/islint/assetutil"
+	"github.com/miku/istools/assetutil"
 	"github.com/miku/span"
 	"github.com/miku/span/finc"
 )

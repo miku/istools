@@ -14,13 +14,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/miku/islint"
+	"github.com/miku/istools"
 	"github.com/miku/span/finc"
 )
 
 var (
 	// tests to run, could be made configurable later
-	tests   = islint.DefaultTests
+	tests   = istools.DefaultTests
 	verbose *bool
 	details *bool
 	version = "0.1.9.2"
@@ -28,7 +28,7 @@ var (
 )
 
 // worker parses JSON and runs all tests on an intermediate schema record.
-func worker(queue chan [][]byte, out chan []islint.Issue, wg *sync.WaitGroup) {
+func worker(queue chan [][]byte, out chan []istools.Issue, wg *sync.WaitGroup) {
 	defer wg.Done()
 	for batch := range queue {
 		for _, b := range batch {
@@ -36,14 +36,14 @@ func worker(queue chan [][]byte, out chan []islint.Issue, wg *sync.WaitGroup) {
 			if err := json.Unmarshal(b, &is); err != nil {
 				log.Fatal(err)
 			}
-			var issues []islint.Issue
+			var issues []istools.Issue
 			for _, t := range tests {
 				err := t.TestRecord(is)
 				if err != nil {
-					if _, ok := err.(islint.Issue); !ok {
+					if _, ok := err.(istools.Issue); !ok {
 						log.Fatalf("invalid error type: %T", err)
 					}
-					issues = append(issues, err.(islint.Issue))
+					issues = append(issues, err.(istools.Issue))
 				}
 			}
 			out <- issues
@@ -54,7 +54,7 @@ func worker(queue chan [][]byte, out chan []islint.Issue, wg *sync.WaitGroup) {
 // Stats keeps basic stats on issues.
 type Stats struct {
 	// IssueDistribution counts the number of occurences per issue kind.
-	IssueDistribution map[islint.Kind]int `json:"issues"`
+	IssueDistribution map[istools.Kind]int `json:"issues"`
 	// IssuesPerRecord count the number of issues per record.
 	IssuesPerRecord map[int]int `json:"frequency"`
 }
@@ -93,9 +93,9 @@ func (s Stats) MarshalJSON() ([]byte, error) {
 }
 
 // writer will dump a list of issues as JSON to stdout. Intermediate results are dumped
-func writer(batches chan []islint.Issue, done chan bool) {
+func writer(batches chan []istools.Issue, done chan bool) {
 	stats := Stats{
-		IssueDistribution: make(map[islint.Kind]int),
+		IssueDistribution: make(map[istools.Kind]int),
 		IssuesPerRecord:   make(map[int]int),
 	}
 	var i int
@@ -189,7 +189,7 @@ WhitespaceAuthor`)
 	var size = 40000
 
 	queue := make(chan [][]byte)
-	out := make(chan []islint.Issue)
+	out := make(chan []istools.Issue)
 	done := make(chan bool)
 
 	var wg sync.WaitGroup
