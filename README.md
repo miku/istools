@@ -1,15 +1,15 @@
-islint
-======
+istools
+=======
 
-Intermediate Schema linter. [What is linting?](http://stackoverflow.com/questions/8503559/what-is-linting)
+islint, an intermediate schema linter. [What is linting?](http://stackoverflow.com/questions/8503559/what-is-linting)
 
-Documentation on [godoc.org](https://godoc.org/github.com/miku/islint).
+Documentation on [godoc.org](https://godoc.org/github.com/miku/istools).
 
 Install current version:
 
-    $ go get github.com/miku/islint/cmd/...
+    $ go get github.com/miku/istools/cmd/...
 
-Outdated precompiled Linux 64-bit toy: [islint](https://github.com/miku/islint/releases/download/v0.1.4/islint)
+Outdated precompiled Linux 64-bit toy: [islint](https://github.com/miku/istools/releases/download/v0.1.4/islint)
 
 Usage
 -----
