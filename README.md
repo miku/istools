@@ -1,6 +1,7 @@
 istools
 =======
 
+* iscov, determine coverage based on [holdings](https://github.com/miku/holdings) file
 * islint, an intermediate schema linter (record quality checks)
 * islabel, a sigel attacher (determine license coverage of records)
 
@@ -67,3 +68,4 @@ Licensing tree.
   }
 }
 ```
+
