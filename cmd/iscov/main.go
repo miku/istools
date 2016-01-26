@@ -100,6 +100,11 @@ func main() {
 				}
 			}
 		}
+
+		if len(is.ISSN) == 0 && len(is.EISSN) == 0 && *permissiveMode {
+			valid = true
+		}
+
 		fmt.Printf("%s\t%v\n", is.RecordID, valid)
 	}
 }
