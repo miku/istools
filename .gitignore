@@ -30,6 +30,7 @@ islint_*.deb
 islint-*.rpm
 /packaging/deb/islint/usr
 /islint
+/iscov
 /fixtures
 NOTES.md
 /assetutil/bindata.go
