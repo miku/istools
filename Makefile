@@ -1,5 +1,5 @@
 SHELL = /bin/bash
-TARGETS = islint
+TARGETS = islint iscov
 
 # find go-bindata executable on vm
 export PATH := /home/vagrant/bin:$(PATH)
@@ -38,6 +38,9 @@ all: $(TARGETS)
 
 islint: assets imports generate deps
 	go build -o islint cmd/islint/main.go
+
+iscov: assets imports generate deps
+	go build -o iscov cmd/iscov/main.go
 
 clean:
 	rm -f $(TARGETS)
