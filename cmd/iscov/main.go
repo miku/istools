@@ -19,6 +19,7 @@ import (
 func main() {
 	filename := flag.String("file", "", "path to holdings file")
 	format := flag.String("format", "kbart", "holding file format, kbart, google, ovid")
+	permissiveMode := flag.Bool("permissive", false, "if we cannot check, we allow")
 
 	flag.Parse()
 
@@ -84,6 +85,11 @@ func main() {
 	LOOP:
 		for _, issn := range append(is.ISSN, is.EISSN...) {
 			licenses := entries.Licenses(issn)
+
+			if len(licenses) == 0 && *permissiveMode {
+				valid = true
+				break LOOP
+			}
 
 			for _, license := range licenses {
 				coverage := license.Covers(signature)
