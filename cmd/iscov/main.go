@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -93,6 +94,6 @@ func main() {
 				}
 			}
 		}
-		log.Printf("%s\t%v", is.RecordID, valid)
+		fmt.Printf("%s\t%v\n", is.RecordID, valid)
 	}
 }
