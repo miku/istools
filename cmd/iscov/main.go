@@ -13,6 +13,7 @@ import (
 	"github.com/miku/holdings/google"
 	"github.com/miku/holdings/kbart"
 	"github.com/miku/holdings/ovid"
+	"github.com/miku/istools"
 	"github.com/miku/span/finc"
 )
 
@@ -20,8 +21,14 @@ func main() {
 	filename := flag.String("file", "", "path to holdings file")
 	format := flag.String("format", "kbart", "holding file format, kbart, google, ovid")
 	permissiveMode := flag.Bool("permissive", false, "if we cannot check, we allow")
+	version := flag.Bool("version", false, "show version")
 
 	flag.Parse()
+
+	if *version {
+		fmt.Println(istools.Version)
+		os.Exit(0)
+	}
 
 	if *filename == "" {
 		log.Fatal("holding -file required")

@@ -23,7 +23,6 @@ var (
 	tests   = istools.DefaultTests
 	verbose *bool
 	details *bool
-	version = "0.1.9.2"
 	start   = time.Now()
 )
 
@@ -88,7 +87,7 @@ func (s Stats) MarshalJSON() ([]byte, error) {
 		"percent":  fmt.Sprintf("%0.3f", percent),
 		"start":    start,
 		"elapsed":  time.Since(start).Seconds(),
-		"version":  fmt.Sprintf("%s/%d", version, len(tests)),
+		"version":  fmt.Sprintf("%s/%d", istools.Version, len(tests)),
 	})
 }
 
@@ -134,14 +133,14 @@ func writer(batches chan []istools.Issue, done chan bool) {
 func main() {
 	details = flag.Bool("details", false, "show error details for every record as TSV")
 	verbose = flag.Bool("verbose", false, "show progress")
-	showVersion := flag.Bool("v", false, "show version and exit")
+	version := flag.Bool("v", false, "show version and exit")
 	listTests := flag.Bool("ls", false, "list tests")
 	sample := flag.Float64("sample", 1.0, "ratio of records to test")
 
 	flag.Parse()
 
-	if *showVersion {
-		fmt.Println(version)
+	if *version {
+		fmt.Println(istools.Version)
 		os.Exit(0)
 	}
 

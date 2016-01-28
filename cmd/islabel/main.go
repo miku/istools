@@ -1,7 +1,7 @@
 package main
 
-import "flag"
+import "log"
 
 func main() {
-	flag.Parse()
+	log.Println("TODO: islabel labels intermediate schema records, e.g. with ISILs")
 }
