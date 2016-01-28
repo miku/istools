@@ -44,24 +44,24 @@ iscov: assets imports generate deps
 
 clean:
 	rm -f $(TARGETS)
-	rm -f islint_*deb
-	rm -f islint-*rpm
-	rm -rf ./packaging/deb/islint/usr
+	rm -f istools_*deb
+	rm -f istools-*rpm
+	rm -rf ./packaging/deb/istools/usr
 	rm -f assetutil/bindata.go
 	rm -f kind_string.go
 
 deb: $(TARGETS)
-	mkdir -p packaging/deb/islint/usr/sbin
-	cp $(TARGETS) packaging/deb/islint/usr/sbin
-	cd packaging/deb && fakeroot dpkg-deb --build islint .
-	mv packaging/deb/islint_*.deb .
+	mkdir -p packaging/deb/istools/usr/sbin
+	cp $(TARGETS) packaging/deb/istools/usr/sbin
+	cd packaging/deb && fakeroot dpkg-deb --build istools .
+	mv packaging/deb/istools_*.deb .
 
 rpm: $(TARGETS)
 	mkdir -p $(HOME)/rpmbuild/{BUILD,SOURCES,SPECS,RPMS}
-	cp ./packaging/rpm/islint.spec $(HOME)/rpmbuild/SPECS
+	cp ./packaging/rpm/istools.spec $(HOME)/rpmbuild/SPECS
 	cp $(TARGETS) $(HOME)/rpmbuild/BUILD
-	./packaging/rpm/buildrpm.sh islint
-	cp $(HOME)/rpmbuild/RPMS/x86_64/islint*.rpm .
+	./packaging/rpm/buildrpm.sh istools
+	cp $(HOME)/rpmbuild/RPMS/x86_64/istools*.rpm .
 
 PORT = 2222
 SSHCMD = ssh -o StrictHostKeyChecking=no -i vagrant.key vagrant@127.0.0.1 -p $(PORT)
@@ -77,9 +77,9 @@ setup: vagrant.key
 	$(SSHCMD) "sudo yum install -y sudo yum install http://ftp.riken.jp/Linux/fedora/epel/6/i386/epel-release-6-8.noarch.rpm"
 	$(SSHCMD) "sudo yum install -y golang git rpm-build gcc-c++"
 	$(SSHCMD) "mkdir -p /home/vagrant/src/github.com/miku"
-	$(SSHCMD) "cd /home/vagrant/src/github.com/miku && git clone /vagrant/.git islint"
+	$(SSHCMD) "cd /home/vagrant/src/github.com/miku && git clone /vagrant/.git istools"
 
 rpm-compatible: vagrant.key
 	$(SSHCMD) "GOPATH=/home/vagrant go get -f -u github.com/jteeuwen/go-bindata/... golang.org/x/tools/cmd/goimports"
-	$(SSHCMD) "cd /home/vagrant/src/github.com/miku/islint && git pull origin master && pwd && GOPATH=/home/vagrant make clean rpm"
-	$(SCPCMD) vagrant@127.0.0.1:/home/vagrant/src/github.com/miku/islint/*rpm .
+	$(SSHCMD) "cd /home/vagrant/src/github.com/miku/istools && git pull origin master && pwd && GOPATH=/home/vagrant make clean rpm"
+	$(SCPCMD) vagrant@127.0.0.1:/home/vagrant/src/github.com/miku/istools/*rpm .

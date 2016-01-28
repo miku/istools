@@ -1,6 +1,6 @@
 Summary:    Finc intermediate schema linter.
 Name:       islint
-Version:    0.1.10
+Version:    0.1.11
 Release:    0
 License:    MIT
 BuildArch:  x86_64
@@ -11,7 +11,7 @@ URL:        https://github.com/miku/islint
 
 %description
 
-Finc intermediate schema linter.
+Finc intermediate schema tools.
 
 %prep
 # the set up macro unpacks the source bundle and changes in to the represented by
@@ -29,6 +29,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/local/sbin
 # put the files in to the relevant directories.
 # the argument on -m is the permissions expressed as octal. (See chmod man page for details.)
 install -m 755 islint $RPM_BUILD_ROOT/usr/local/sbin
+install -m 755 iscov $RPM_BUILD_ROOT/usr/local/sbin
 
 %post
 # the post section is where you can run commands after the rpm is installed.
@@ -43,6 +44,7 @@ rm -rf %{_topdir}/BUILD/%{name}
 %files
 %defattr(-,root,root)
 /usr/local/sbin/islint
+/usr/local/sbin/iscov
 
 
 %changelog

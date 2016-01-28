@@ -26,9 +26,9 @@ _testmain.go
 /fixtures/private
 /tmp
 
-islint_*.deb
-islint-*.rpm
-/packaging/deb/islint/usr
+istools_*.deb
+istools-*.rpm
+/packaging/deb/istools/usr
 /islint
 /iscov
 /fixtures
