@@ -21,6 +21,7 @@ func main() {
 	filename := flag.String("file", "", "path to holdings file")
 	format := flag.String("format", "kbart", "holding file format, kbart, google, ovid")
 	permissiveMode := flag.Bool("permissive", false, "if we cannot check, we allow")
+	ignoreUnmarshalErrors := flag.Bool("ignore-unmarshal-errors", false, "keep using what could be unmarshalled")
 	version := flag.Bool("version", false, "show version")
 
 	flag.Parse()
@@ -65,7 +66,16 @@ func main() {
 
 	entries, err := hr.ReadAll()
 	if err != nil {
-		log.Fatal(err)
+		switch err.(type) {
+		case holdings.ParseError:
+			if *ignoreUnmarshalErrors {
+				log.Println(err)
+			} else {
+				log.Fatal(err)
+			}
+		default:
+			log.Fatal(err)
+		}
 	}
 
 	for {
