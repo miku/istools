@@ -1,5 +1,5 @@
 Summary:    Finc intermediate schema linter.
-Name:       islint
+Name:       istools
 Version:    0.1.11
 Release:    0
 License:    MIT
