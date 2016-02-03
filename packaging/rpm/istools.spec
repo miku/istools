@@ -7,7 +7,7 @@ BuildArch:  x86_64
 BuildRoot:  %{_tmppath}/%{name}-build
 Group:      System/Base
 Vendor:     UB Leipzig
-URL:        https://github.com/miku/islint
+URL:        https://github.com/miku/istools
 
 %description
 
