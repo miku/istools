@@ -118,17 +118,15 @@ func main() {
 			}
 
 			for _, license := range licenses {
-				err := license.Covers(signature)
-				if err != nil {
+				if err := license.Covers(signature); err != nil {
 					messages.Add(err.Error())
 				} else {
-					wall := license.TimeRestricted(is.Date)
-					if wall == nil {
+					if err := license.TimeRestricted(is.Date); err != nil {
+						messages.Add(err.Error())
+					} else {
 						messages.Add("OK")
 						valid = true
 						break LOOP
-					} else {
-						messages.Add(wall.Error())
 					}
 				}
 			}
