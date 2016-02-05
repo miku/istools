@@ -1,6 +1,6 @@
 Summary:    Finc intermediate schema linter.
 Name:       istools
-Version:    0.1.11
+Version:    0.1.12
 Release:    0
 License:    MIT
 BuildArch:  x86_64

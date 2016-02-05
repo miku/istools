@@ -8,12 +8,15 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
+	"strings"
 
 	"github.com/miku/holdings"
 	"github.com/miku/holdings/google"
 	"github.com/miku/holdings/kbart"
 	"github.com/miku/holdings/ovid"
 	"github.com/miku/istools"
+	"github.com/miku/span/container"
 	"github.com/miku/span/finc"
 )
 
@@ -98,30 +101,50 @@ func main() {
 
 		// validate record, if at least one license allows this item
 		var valid bool
+		var messages = container.NewStringSet()
 
 	LOOP:
 		for _, issn := range append(is.ISSN, is.EISSN...) {
 			licenses := entries.Licenses(issn)
 
+			if len(licenses) == 0 {
+				messages.Add(fmt.Sprintf("ISSN not in holdings"))
+			}
+
 			if len(licenses) == 0 && *permissiveMode {
+				messages.Add("PERMISSIVE_OK")
 				valid = true
 				break LOOP
 			}
 
 			for _, license := range licenses {
-				coverage := license.Covers(signature)
-				wall := license.TimeRestricted(is.Date)
-				if coverage == nil && wall == nil {
-					valid = true
-					break LOOP
+				err := license.Covers(signature)
+				if err != nil {
+					messages.Add(err.Error())
+				} else {
+					wall := license.TimeRestricted(is.Date)
+					if wall == nil {
+						messages.Add("OK")
+						valid = true
+						break LOOP
+					} else {
+						messages.Add(wall.Error())
+					}
 				}
 			}
 		}
 
+		if len(is.ISSN) == 0 && len(is.EISSN) == 0 {
+			messages.Add("Record has no ISSN")
+		}
+
 		if len(is.ISSN) == 0 && len(is.EISSN) == 0 && *permissiveMode {
+			messages.Add("PERMISSIVE_OK")
 			valid = true
 		}
 
-		fmt.Printf("%s\t%v\n", is.RecordID, valid)
+		values := messages.Values()
+		sort.Strings(values)
+		fmt.Printf("%s\t%v\t%v\n", is.RecordID, valid, strings.Join(values, ", "))
 	}
 }
