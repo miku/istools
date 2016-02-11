@@ -1,3 +1,4 @@
+// TODO(miku): parallel processing.
 package main
 
 import (
