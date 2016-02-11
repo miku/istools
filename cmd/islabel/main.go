@@ -27,6 +27,9 @@ func main() {
 	version := flag.Bool("version", false, "show version")
 	label := flag.String("label", "X", "label to add")
 
+	var tags istools.TagSlice
+	flag.Var(&tags, "x", "ISIL:/path/to/kbart.txt")
+
 	flag.Parse()
 
 	if *version {
